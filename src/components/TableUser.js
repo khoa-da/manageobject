@@ -4,17 +4,29 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { fetchAllUsers } from "./Services/UserService";
+import ReactPaginate from "react-paginate";
+
+import TablePagination from "@mui/material/TablePagination";
 
 const TableUsers = () => {
   const [listusers, setListUsers] = useState([]);
+  const [totalPage, setTotalPage] = useState(0);
+  const [totalusers, setTotalUsers] = useState(0);
+
   useEffect(() => {
-    getUsers();
+    getUsers(1);
   }, []);
-  const getUsers = async () => {
-    let res = await fetchAllUsers();
-    if (res && res.data && res.data.data) {
-      setListUsers(res.data.data);
+  const getUsers = async (page) => {
+    let res = await fetchAllUsers(page);
+    if (res && res.data) {
+      setListUsers(res.data);
+      setTotalPage(res.total_pages);
+      setTotalUsers(res.total);
     }
+  };
+
+  const handlePageClick = (event) => {
+    getUsers(event.selected + 1);
   };
 
   console.log(listusers);
@@ -45,6 +57,25 @@ const TableUsers = () => {
             })}
         </tbody>
       </Table>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={totalPage}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+      />
     </div>
   );
 };

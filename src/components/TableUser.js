@@ -24,6 +24,7 @@ const TableUsers = () => {
       setTotalUsers(res.total);
     }
   };
+  console.log(listusers);
 
   const handlePageClick = (event) => {
     getUsers(event.selected + 1);

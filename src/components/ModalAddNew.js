@@ -1,14 +1,26 @@
 import { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
+import { createUser } from "./Services/UserService";
+import { toast } from "react-toastify";
 
 const ModalAddNew = (props) => {
-  const { show, handleClose } = props;
+  const { show, handleClose, handleUpdateTable } = props;
 
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
 
-  const handleSaveUser = () => {
-    console.log(name, job);
+  const handleSaveUser = async () => {
+    let res = await createUser(name, job);
+    console.log(res);
+    if (res && res.id) {
+      handleClose();
+      setName("");
+      setJob("");
+      toast.success("Successfully fetched users");
+      handleUpdateTable({ first_name: name, id: res.id });
+    } else {
+      toast.error("Failed to fetch users");
+    }
   };
   return (
     <>
@@ -52,4 +64,5 @@ const ModalAddNew = (props) => {
     </>
   );
 };
+
 export default ModalAddNew;

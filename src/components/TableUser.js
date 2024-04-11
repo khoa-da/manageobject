@@ -7,11 +7,18 @@ import { fetchAllUsers } from "./Services/UserService";
 import ReactPaginate from "react-paginate";
 
 import TablePagination from "@mui/material/TablePagination";
+import ModalAddNew from "./ModalAddNew";
 
 const TableUsers = () => {
   const [listusers, setListUsers] = useState([]);
   const [totalPage, setTotalPage] = useState(0);
   const [totalusers, setTotalUsers] = useState(0);
+
+  const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+
+  const handleClose = () => {
+    setIsShowModalAddNew(false);
+  };
 
   useEffect(() => {
     getUsers(1);
@@ -30,10 +37,25 @@ const TableUsers = () => {
     getUsers(event.selected + 1);
   };
 
+  const handleUpdateTable = (user) => {
+    setListUsers([...listusers, user]);
+  };
+
   console.log(listusers);
 
   return (
     <div>
+      <div className="my-3 add-new">
+        <span>
+          <b>List User</b>
+        </span>
+        <button
+          className="btn btn-primary"
+          onClick={() => setIsShowModalAddNew(true)}
+        >
+          Add new user
+        </button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -76,6 +98,11 @@ const TableUsers = () => {
         breakLinkClassName="page-link"
         containerClassName="pagination"
         activeClassName="active"
+      />
+      <ModalAddNew
+        show={isShowModalAddNew}
+        handleClose={handleClose}
+        handleUpdateTable={handleUpdateTable}
       />
     </div>
   );
